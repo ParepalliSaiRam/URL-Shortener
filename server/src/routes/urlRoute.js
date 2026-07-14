@@ -24,4 +24,16 @@ router.get(
     urlController.getUserUrls
 );
 
+router.get(
+    "/dashboard",
+    authenticate,
+    urlController.getDashboard
+);
+
+router.delete(
+    "/:id",
+    authenticate,
+    urlController.deleteShortUrl
+);
+
 module.exports = router;
