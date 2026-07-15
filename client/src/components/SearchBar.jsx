@@ -1,11 +1,11 @@
 function SearchBar({ value, onChange }) {
     return (
         <input
-            type="text"
+            type="search"
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            placeholder="Search URLs..."
-            className="border rounded-lg p-2 w-full"
+            placeholder="Search by original URL or short code..."
+            className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
     );
 }

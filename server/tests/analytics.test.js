@@ -42,21 +42,23 @@ beforeAll(async () => {
 
 });
 
-test("GET /urls/dashboard should return dashboard data", async () => {
+test("GET /urls/analytics should return analytics", async () => {
 
     const response = await request(app)
-        .get("/urls/dashboard")
+        .get("/urls/analytics")
         .set("Authorization", `Bearer ${token}`);
 
     expect(response.status).toBe(200);
 
     expect(response.body.success).toBe(true);
 
-    expect(response.body.data.totalUrls).toBe(2);
+    expect(Array.isArray(response.body.data)).toBe(true);
 
-    expect(response.body.data.totalClicks).toBe(0);
+    expect(response.body.data.length).toBeGreaterThan(0);
 
-    expect(response.body.data.recentUrls.length).toBe(2);
+    expect(response.body.data[0]).toHaveProperty("originalUrl");
+
+    expect(response.body.data[0]).toHaveProperty("clicks");
 
 });
 
@@ -64,7 +66,6 @@ afterAll(async () => {
 
     await prisma.shortURL.deleteMany();
     await prisma.user.deleteMany();
-
     await prisma.$disconnect();
 
 });

@@ -15,9 +15,10 @@ const createShortUrl = asyncHandler(async (req, res) => {
         HTTP_STATUS.CREATED,
         "Short URL created successfully.",
         {
+            id: url.id,
             originalUrl: url.originalUrl,
             shortCode: url.shortCode,
-            shortUrl: `${process.env.BASE_URL}/${url.shortCode}`
+            shortUrl: `${req.protocol}://${req.get("host")}/${url.shortCode}`,
         }
     );
 

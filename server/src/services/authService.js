@@ -1,6 +1,8 @@
 const bcrypt = require("bcrypt");
 const prisma = require("../config/prisma");
 const { generateToken } = require("../utils/jwt");
+const ConflictError = require("../errors/ConflictError");
+const UnauthorizedError = require("../errors/UnauthorizedError");
 
 async function signup(userData) {
     // Check if email already exists
@@ -11,7 +13,6 @@ async function signup(userData) {
     });
 
     if (existingUser) {
-        const ConflictError = require("../errors/ConflictError");
         throw new ConflictError("Email already registered.");
     }
 
@@ -26,22 +27,28 @@ async function signup(userData) {
         },
     });
 
-    return user;
+    return {
+        user: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+        },
+    };
 }
 
-const UnauthorizedError = require("../errors/UnauthorizedError");
-
 async function login(credentials) {
-
-    console.log("Login credentials:", credentials);
 
     const user = await prisma.user.findUnique({
         where: {
             email: credentials.email,
         },
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            password: true,
+        },
     });
-
-    console.log("User from DB:", user);
 
     if (!user) {
         throw new UnauthorizedError("Invalid email or password.");
@@ -52,8 +59,6 @@ async function login(credentials) {
         user.password
     );
 
-    console.log("Password matched:", isPasswordCorrect);
-
     if (!isPasswordCorrect) {
         throw new UnauthorizedError("Invalid email or password.");
     }
@@ -61,7 +66,11 @@ async function login(credentials) {
     const token = generateToken(user);
 
     return {
-        user,
+        user: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+        },
         token,
     };
 }

@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  client:
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: client
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm install
+
+      - run: npm run build
+
+  server:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: server
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm install
+
+      - run: npx prisma generate
+
+      - name: Create .env.test
+        run: |
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env.test
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.test
+          echo "JWT_EXPIRES_IN=${{ secrets.JWT_EXPIRES_IN }}" >> .env.test
+          echo "BASE_URL=${{ secrets.BASE_URL }}" >> .env.test
+          echo "CLIENT_URL=${{ secrets.CLIENT_URL }}" >> .env.test
+          echo "NODE_ENV=${{ secrets.NODE_ENV }}" >> .env.test
+
+      - run: npm test -- --passWithNoTests

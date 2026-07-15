@@ -30,7 +30,9 @@ export async function createShortUrl(originalUrl) {
 
 export async function deleteUrl(id) {
 
-    await api.delete(`/urls/${id}`);
+    const response = await api.delete(`/urls/${id}`);
+
+    return response.data;
 
 }
 

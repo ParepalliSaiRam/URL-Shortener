@@ -1,36 +1,49 @@
-import { useNavigate } from "react-router-dom";
-import { logout } from "../utils/auth";
+import { useLocation } from "react-router-dom";
 
 function Header() {
 
-    const navigate = useNavigate();
+    const location = useLocation();
 
-    function handleLogout() {
+    const pageInfo = {
+        "/dashboard": {
+            title: "Dashboard",
+            subtitle: "Overview of your URL statistics",
+        },
+        "/urls": {
+            title: "My URLs",
+            subtitle: "Create and manage your shortened URLs",
+        },
+        "/analytics": {
+            title: "Analytics",
+            subtitle: "Track clicks and URL performance",
+        },
+    };
 
-        logout();
-
-        navigate("/login");
-
-    }
+    const current =
+        pageInfo[location.pathname] || {
+            title: "URL Shortener",
+            subtitle: "",
+        };
 
     return (
+    <header className="bg-white border-b px-8 py-5">
+    {/* <header className="sticky top-0 z-10 bg-white border-b px-8 py-5"> */}
 
-        <header className="flex items-center justify-between bg-white border-b p-4">
+        <h1 className="text-3xl font-bold">
 
-            <h1 className="text-2xl font-bold">
-                URL Shortener
-            </h1>
+            {current.title}
 
-            <button
-                onClick={handleLogout}
-                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
-            >
-                Logout
-            </button>
+        </h1>
 
-        </header>
+        <p className="text-gray-500 mt-1">
 
-    );
+            {current.subtitle}
+
+        </p>
+
+    </header>
+
+);
 
 }
 

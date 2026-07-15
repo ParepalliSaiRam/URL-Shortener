@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "test": "jest"
+    "test": "dotenv -e .env.test -- jest --runInBand --coverage"
   },
   "keywords": [],
   "author": "",
@@ -29,6 +29,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "dotenv-cli": "^11.0.0",
     "jest": "^30.4.2",
     "nodemon": "^3.1.14",
     "supertest": "^7.2.2"

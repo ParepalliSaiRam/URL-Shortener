@@ -11,29 +11,20 @@ const authenticate = require("../middleware/authMiddleware");
  * @swagger
  * /auth/signup:
  *   post:
- *     summary: Register a new user
  *     tags:
  *       - Authentication
+ *     summary: Register a new user
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - name
- *               - email
- *               - password
- *             properties:
- *               name:
- *                 type: string
- *               email:
- *                 type: string
- *               password:
- *                 type: string
+ *             $ref: '#/components/schemas/UserSignup'
  *     responses:
  *       201:
- *         description: User registered successfully
+ *         description: User registered successfully.
+ *       409:
+ *         description: Email already exists.
  */
 
 router.post(
@@ -45,11 +36,48 @@ router.post(
 const { loginSchema } =
     require("../validations/userValidation");
 
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     tags:
+ *       - Authentication
+ *     summary: Login user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UserLogin'
+ *     responses:
+ *       200:
+ *         description: Login successful.
+ *       401:
+ *         description: Invalid credentials.
+ */
+
 router.post(
     "/login",
     validate(loginSchema),
     authController.login
 );
+
+/**
+ * @swagger
+ * /auth/me:
+ *   get:
+ *     summary: Get current authenticated user
+ *     description: Returns details of the currently logged-in user.
+ *     tags:
+ *       - Authentication
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Current user returned successfully.
+ *       401:
+ *         description: Unauthorized.
+ */
 
 router.get(
     "/me",
