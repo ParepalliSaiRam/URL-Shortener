@@ -88,10 +88,26 @@ const getDashboard = asyncHandler(async (req, res) => {
 
 });
 
+const getAnalytics = asyncHandler(async (req, res) => {
+
+    const analytics = await urlService.getAnalytics(
+        req.user.id
+    );
+
+    sendResponse(
+        res,
+        HTTP_STATUS.OK,
+        "Analytics fetched successfully.",
+        analytics
+    );
+
+});
+
 module.exports = {
     createShortUrl,
     getUserUrls,
     redirectToOriginalUrl,
     deleteShortUrl,
     getDashboard,
+    getAnalytics,
 };

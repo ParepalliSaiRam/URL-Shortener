@@ -5,6 +5,9 @@ import SignupPage from "../pages/SignupPage";
 import DashboardPage from "../pages/DashboardPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import ProtectedRoute from "./ProtectedRoute";
+import MyUrlsPage from "../pages/MyUrlsPage";
+import Layout from "../components/Layout";
+import AnalyticsPage from "../pages/AnalyticsPage";
 
 function AppRoutes() {
     return (
@@ -12,23 +15,29 @@ function AppRoutes() {
             <Routes>
                 <Route path="/" element={<LoginPage />} />
                 <Route path="/signup" element={<SignupPage />} />
-                <Route
-                    path="/dashboard"
-                    element={
-                        <ProtectedRoute>
-                            <DashboardPage />
-                        </ProtectedRoute>
-                    }
-                />
                 <Route path="*" element={<NotFoundPage />} />
                 <Route
-                    path="/urls"
                     element={
                         <ProtectedRoute>
-                            <MyUrlsPage />
+                            <Layout />
                         </ProtectedRoute>
                     }
+                >
+                <Route
+                    path="/dashboard"
+                    element={<DashboardPage />}
                 />
+
+                <Route
+                    path="/urls"
+                    element={<MyUrlsPage />}
+                />
+
+                <Route
+                    path="/analytics"
+                    element={<AnalyticsPage />}
+                />
+                </Route>
             </Routes>
         </BrowserRouter>
     );

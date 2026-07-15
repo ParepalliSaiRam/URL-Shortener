@@ -12,13 +12,24 @@ const {
     swaggerUi,
     swaggerSpec,
 } = require("./docs/swagger");
+const helmet = require("helmet");
+const rateLimiter = require("./middleware/rateLimiter");
+
+app.use(rateLimiter);
+
+app.use(helmet());
 
 // Middleware
 app.use(express.json());
 
 const cors = require("cors");
 
-app.use(cors());
+app.use(
+    cors({
+        origin: "http://localhost:5173",
+        credentials: true,
+    })
+);
 
 app.use(
     "/api-docs",

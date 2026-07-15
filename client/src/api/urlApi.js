@@ -17,3 +17,27 @@ export async function getUserUrls(params) {
     return response.data.data;
 
 }
+
+export async function createShortUrl(originalUrl) {
+
+    const response = await api.post("/urls", {
+        originalUrl,
+    });
+
+    return response.data.data;
+
+}
+
+export async function deleteUrl(id) {
+
+    await api.delete(`/urls/${id}`);
+
+}
+
+export async function getAnalytics() {
+
+    const response = await api.get("/urls/analytics");
+
+    return response.data.data;
+
+}

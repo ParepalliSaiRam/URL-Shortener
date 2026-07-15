@@ -1,0 +1,54 @@
+services:
+
+  postgres:
+    image: postgres:17
+    container_name: url-shortener-db
+
+    restart: always
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: url_shortener
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./server
+
+    container_name: url-shortener-backend
+
+    depends_on:
+      - postgres
+
+    ports:
+      - "3000:3000"
+
+    env_file:
+      - ./server/.env
+
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+
+  frontend:
+    build: ./client
+
+    container_name: url-shortener-frontend
+
+    depends_on:
+      - backend
+
+    ports:
+      - "5173:5173"
+
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+
+volumes:
+  postgres_data:

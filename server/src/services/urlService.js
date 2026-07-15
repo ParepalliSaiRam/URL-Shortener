@@ -1,9 +1,9 @@
-const { nanoid } = require("nanoid");
+const crypto = require("crypto");
 const prisma = require("../config/prisma");
 
 async function createShortUrl(originalUrl, userId) {
 
-    const shortCode = nanoid(6);
+    const shortCode = crypto.randomBytes(4).toString("base64url");
 
     const shortUrl = await prisma.shortURL.create({
         data: {
@@ -190,10 +190,34 @@ async function getDashboard(userId) {
     };
 }
 
+async function getAnalytics(userId) {
+
+    const topUrls = await prisma.shortURL.findMany({
+        where: {
+            userId,
+        },
+        orderBy: {
+            clicks: "desc",
+        },
+        take: 10,
+        select: {
+            id: true,
+            originalUrl: true,
+            shortCode: true,
+            clicks: true,
+            createdAt: true,
+        },
+    });
+
+    return topUrls;
+
+}
+
 module.exports = {
     createShortUrl,
     getUserUrls,
     getOriginalUrl,
     deleteShortUrl,
     getDashboard,
+    getAnalytics,
 };

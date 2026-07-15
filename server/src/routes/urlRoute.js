@@ -30,6 +30,12 @@ router.get(
     urlController.getDashboard
 );
 
+router.get(
+    "/analytics",
+    authenticate,
+    urlController.getAnalytics
+);
+
 router.delete(
     "/:id",
     authenticate,

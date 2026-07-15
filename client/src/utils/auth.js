@@ -13,3 +13,7 @@ export function removeToken() {
 export function isAuthenticated() {
     return !!getToken();
 }
+
+export function logout() {
+    localStorage.removeItem("token");
+}

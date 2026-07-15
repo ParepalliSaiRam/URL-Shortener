@@ -1,26 +1,81 @@
 import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+
+import { createShortUrl } from "../api/urlApi";
 
 function CreateUrlForm() {
 
-    const [url, setUrl] = useState("");
+    const [originalUrl, setOriginalUrl] = useState("");
+
+    const queryClient = useQueryClient();
+
+    const mutation = useMutation({
+
+        mutationFn: createShortUrl,
+
+        onSuccess: () => {
+
+            toast.success("Short URL created!");
+
+            setOriginalUrl("");
+
+            queryClient.invalidateQueries({
+                queryKey: ["urls"],
+            });
+
+            queryClient.invalidateQueries({
+                queryKey: ["dashboard"],
+            });
+
+        },
+
+        onError: (error) => {
+
+            toast.error(
+                error.response?.data?.message ||
+                "Something went wrong."
+            );
+
+        },
+
+    });
+
+    function handleSubmit(e) {
+
+        e.preventDefault();
+
+        mutation.mutate(originalUrl);
+
+    }
 
     return (
 
-        <form className="flex gap-3">
+        <form
+            onSubmit={handleSubmit}
+            className="flex gap-3"
+        >
 
             <input
-                className="border rounded-lg p-2 flex-1"
-                placeholder="Paste URL..."
-                value={url}
+                type="url"
+                value={originalUrl}
                 onChange={(e) =>
-                    setUrl(e.target.value)
+                    setOriginalUrl(e.target.value)
                 }
+                placeholder="https://example.com"
+                className="flex-1 border rounded-lg p-3"
+                required
             />
 
             <button
-                className="bg-blue-600 text-white px-5 rounded-lg"
+                className="bg-blue-600 text-white px-6 rounded-lg"
+                disabled={mutation.isPending}
             >
-                Create
+                {
+                    mutation.isPending
+                        ? "Creating..."
+                        : "Create"
+                }
             </button>
 
         </form>
